@@ -40,7 +40,7 @@ if __name__ == "__main__":
     main()
 
 #mapa
-from app.visualizations.visualization import generate_station_map
+from app.visualizations.maps import generate_station_map
 
 def main():
     generate_station_map("PM10")  # możesz też użyć np. "PM2.5"
