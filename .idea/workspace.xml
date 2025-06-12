@@ -7,9 +7,7 @@
     <list default="true" id="3139bdd0-ea1f-4ce3-acce-16ac8d636637" name="Changes" comment="03">
       <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api_GIOS.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api_GIOS.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/visualizations/charts.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/visualizations/charts.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/visualizations/maps.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/visualizations/maps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/analysis.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/air_quality.db" beforeDir="false" afterPath="$PROJECT_DIR$/data/air_quality.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mapa_stacji.html" beforeDir="false" afterPath="$PROJECT_DIR$/mapa_stacji.html" afterDir="false" />
@@ -62,6 +60,7 @@
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "Python.Dane GIOS.executor": "Run",
+    "Python.analysis.executor": "Run",
     "Python.api GIOS.executor": "Run",
     "Python.api_GIOS.executor": "Run",
     "Python.charts.executor": "Run",
@@ -118,7 +117,7 @@
       <workItem from="1748089850441" duration="79000" />
       <workItem from="1748090055525" duration="12852000" />
       <workItem from="1748117424743" duration="15000" />
-      <workItem from="1749726749261" duration="9536000" />
+      <workItem from="1749726749261" duration="12800000" />
     </task>
     <task id="LOCAL-00001" summary="02">
       <option name="closed" value="true" />
@@ -136,7 +135,23 @@
       <option name="project" value="LOCAL" />
       <updated>1748114530846</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="03">
+      <option name="closed" value="true" />
+      <created>1749757283130</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1749757283130</updated>
+    </task>
+    <task id="LOCAL-00004" summary="03">
+      <option name="closed" value="true" />
+      <created>1749757383157</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1749757383157</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -153,9 +168,10 @@
     <SUITE FILE_PATH="coverage/PROJEKT_ZALICZENIOWY$database.coverage" NAME="database Coverage Results" MODIFIED="1748108827099" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/data" />
     <SUITE FILE_PATH="coverage/PROJEKT_ZALICZENIOWY$Dane_GIOS.coverage" NAME="Dane GIOS Coverage Results" MODIFIED="1748090077807" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/PROJEKT_ZALICZENIOWY$station_selection.coverage" NAME="station_selection Coverage Results" MODIFIED="1748110528413" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
+    <SUITE FILE_PATH="coverage/PROJEKT_ZALICZENIOWY$analysis.coverage" NAME="analysis Coverage Results" MODIFIED="1749759602361" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
     <SUITE FILE_PATH="coverage/PROJEKT_ZALICZENIOWY$ingest.coverage" NAME="ingest Coverage Results" MODIFIED="1748110552498" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
     <SUITE FILE_PATH="coverage/PROJEKT_ZALICZENIOWY$sensor_selection.coverage" NAME="sensor_selection Coverage Results" MODIFIED="1748111317401" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
-    <SUITE FILE_PATH="coverage/PROJEKT_ZALICZENIOWY$main.coverage" NAME="main Coverage Results" MODIFIED="1749756511424" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/PROJEKT_ZALICZENIOWY$main.coverage" NAME="main Coverage Results" MODIFIED="1749761658592" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/PROJEKT_ZALICZENIOWY$api_GIOS.coverage" NAME="api_GIOS Coverage Results" MODIFIED="1749756447877" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
   </component>
 </project>
