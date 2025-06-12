@@ -4,12 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3139bdd0-ea1f-4ce3-acce-16ac8d636637" name="Changes" comment="03">
-      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/analysis.py" afterDir="false" />
+    <list default="true" id="3139bdd0-ea1f-4ce3-acce-16ac8d636637" name="Changes" comment="04">
       <change beforePath="$PROJECT_DIR$/data/air_quality.db" beforeDir="false" afterPath="$PROJECT_DIR$/data/air_quality.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mapa_stacji.html" beforeDir="false" afterPath="$PROJECT_DIR$/mapa_stacji.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -117,7 +113,7 @@
       <workItem from="1748089850441" duration="79000" />
       <workItem from="1748090055525" duration="12852000" />
       <workItem from="1748117424743" duration="15000" />
-      <workItem from="1749726749261" duration="12800000" />
+      <workItem from="1749726749261" duration="13115000" />
     </task>
     <task id="LOCAL-00001" summary="02">
       <option name="closed" value="true" />
@@ -151,7 +147,23 @@
       <option name="project" value="LOCAL" />
       <updated>1749757383157</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="04">
+      <option name="closed" value="true" />
+      <created>1749762051620</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1749762051620</updated>
+    </task>
+    <task id="LOCAL-00006" summary="04">
+      <option name="closed" value="true" />
+      <created>1749762058188</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1749762058188</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -160,7 +172,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="02" />
     <MESSAGE value="03" />
-    <option name="LAST_COMMIT_MESSAGE" value="03" />
+    <MESSAGE value="04" />
+    <option name="LAST_COMMIT_MESSAGE" value="04" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PROJEKT_ZALICZENIOWY$visualization.coverage" NAME="visualization Coverage Results" MODIFIED="1748111614623" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
@@ -171,7 +184,7 @@
     <SUITE FILE_PATH="coverage/PROJEKT_ZALICZENIOWY$analysis.coverage" NAME="analysis Coverage Results" MODIFIED="1749759602361" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
     <SUITE FILE_PATH="coverage/PROJEKT_ZALICZENIOWY$ingest.coverage" NAME="ingest Coverage Results" MODIFIED="1748110552498" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
     <SUITE FILE_PATH="coverage/PROJEKT_ZALICZENIOWY$sensor_selection.coverage" NAME="sensor_selection Coverage Results" MODIFIED="1748111317401" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
-    <SUITE FILE_PATH="coverage/PROJEKT_ZALICZENIOWY$main.coverage" NAME="main Coverage Results" MODIFIED="1749761658592" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/PROJEKT_ZALICZENIOWY$main.coverage" NAME="main Coverage Results" MODIFIED="1749762060874" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/PROJEKT_ZALICZENIOWY$api_GIOS.coverage" NAME="api_GIOS Coverage Results" MODIFIED="1749756447877" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
   </component>
 </project>

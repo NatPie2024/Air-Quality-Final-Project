@@ -25,6 +25,7 @@ def fetch_and_save_measurements(sensor_data):
 
 def main():
     # 🧱 Krok 1: utwórz tabele
+    global date_from, date_to
     create_tables()
 
     # 🏙️ Krok 2: wybór miasta i stacji
@@ -46,13 +47,15 @@ def main():
     generate_station_map("PM10")
 
     # 📈 Krok 6: wykres
-    date_from = input("📅 Data początkowa (YYYY-MM-DD) [Enter = brak]: ") or None
-    date_to = input("📅 Data końcowa (YYYY-MM-DD) [Enter = brak]: ") or None
-    save = input("💾 Czy zapisać wykres do pliku? (t/n): ").lower()
-    if save == 't':
-        plot_measurements(sensor_id, date_from, date_to, save_path="wykres.png")
-    else:
-        plot_measurements(sensor_id, date_from, date_to)
+    wykres = input("📈 Czy chcesz wygenerować wykres? (t/n): ").lower()
+    if wykres == 't':
+        date_from = input("📅 Data początkowa (YYYY-MM-DD) [Enter = brak]: ") or None
+        date_to = input("📅 Data końcowa (YYYY-MM-DD) [Enter = brak]: ") or None
+        save = input("💾 Czy zapisać wykres do pliku? (t/n): ").lower()
+        if save == 't':
+            plot_measurements(sensor_id, date_from, date_to, save_path="wykres.png")
+        else:
+            plot_measurements(sensor_id, date_from, date_to)
 
     # 📊 Krok 7: analiza
     analyze = input("📊 Czy chcesz wykonać analizę danych? (t/n): ").lower()
