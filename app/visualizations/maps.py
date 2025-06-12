@@ -22,7 +22,7 @@ def get_color_for_pm10(value):
         return "red"
 
 def generate_station_map(param_code="PM10"):
-    print("⏬ Pobieranie listy stacji...")
+    print("⏬ Pobieranie mapy...")
     stations = api_GIOS.get_all_stations()
 
     station_map = folium.Map(location=[52.4, 16.9], zoom_start=6)  # środek Polski

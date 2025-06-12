@@ -1,14 +1,15 @@
-from app.station_selection import select_station_from_city
-from app.sensor_selection import select_sensor_from_station
-from app.database import create_tables, insert_sensor, insert_measurement
 from app import api_GIOS
+from app.database import create_tables, insert_sensor, insert_measurement
+from app.sensor_selection import select_sensor_from_station
+from app.station_selection import select_station_from_city
+
 
 def fetch_and_save_measurements(sensor_data):
     sensor_id = sensor_data["id"]
     station_id = sensor_data["stationId"]
     insert_sensor(sensor_data, station_id)
 
-    print(f"\n⏬ Pobieranie danych pomiarowych z czujnika ID: {sensor_id}")
+    print(f"\n Pobieranie danych pomiarowych z czujnika ID: {sensor_id}")
     measurements = api_GIOS.get_measurements_for_sensor(sensor_id)
 
     if not measurements.get("values"):
@@ -23,8 +24,9 @@ def fetch_and_save_measurements(sensor_data):
 def main():
     create_tables()
 
-    # Krok 1: wybór stacji
-    station_id = select_station_from_city("Poznań")
+    # Krok 1: wybór miasta
+    city_name = input(" Podaj nazwę miasta: ")
+    station_id = select_station_from_city(city_name)
     if not station_id:
         return
 
@@ -39,7 +41,7 @@ def main():
 if __name__ == "__main__":
     main()
 
-#mapa
+# generowanie mapa
 from app.visualizations.maps import generate_station_map
 
 def main():
@@ -48,9 +50,8 @@ def main():
 if __name__ == "__main__":
     main()
 
-#wykres
+# wyświetlanie wykresu
 from app.visualizations.charts import plot_measurements
-
 
 def main():
     try:
@@ -59,8 +60,17 @@ def main():
         print("❌ Niepoprawny numer ID.")
         return
 
-    date_from = input("📅 Data początkowa (YYYY-MM-DD) [Enter = brak ograniczenia]: ") or None
-    date_to = input("📅 Data końcowa (YYYY-MM-DD) [Enter = brak ograniczenia]: ") or None
+    date_from = input(" Data początkowa (YYYY-MM-DD) [Enter = brak]: ") or None
+    date_to = input(" Data końcowa (YYYY-MM-DD) [Enter = brak]: ") or None
+    save = input(" Czy zapisać wykres do pliku? (t/n): ").lower()
 
-    plot_measurements(sensor_id, date_from, date_to)
+    if save == 't':
+        plot_measurements(sensor_id, date_from, date_to)
+    else:
+        plot_measurements(sensor_id, date_from, date_to)
+
+if __name__ == "__main__":
+    main()
+
+
 
