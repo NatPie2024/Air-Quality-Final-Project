@@ -1,38 +1,43 @@
-from app import api_GIOS, database
+from app import api_GIOS
+from app.database import create_tables, insert_station, insert_sensor, insert_measurement
 
-def download_and_save_data(limit=3):
-    print("⏬ Pobieranie listy stacji z API GIOŚ...")
+def fetch_and_save_all_data():
+    # Utworzenie tabel w bazie danych (jeśli nie istnieją)
+    create_tables()
+
+    # Pobranie listy wszystkich stacji z API GIOŚ
     stations = api_GIOS.get_all_stations()
+    print(f"Znaleziono {len(stations)} stacji.")
 
-    if not stations:
-        print("❌ Nie udało się pobrać danych ze stacji.")
-        return
+    for station in stations:
+        # Zapis stacji do bazy danych
+        insert_station(station)
+        station_id = station["id"]
+        print(f"\nStacja: {station['stationName']} ({station['city']['name']})")
 
-    for station in stations[:limit]:  # pobieramy tylko kilka stacji (np. 3)
-        print(f"\n📍 Stacja: {station['stationName']} ({station['city']['name']})")
-
-        # Zapis stacji do bazy
-        database.insert_station(station)
-
-        # Pobierz sensory (czujniki) stacji
-        sensors = api_GIOS.get_sensors_for_station(station['id'])
+        # Pobranie listy sensorów dla danej stacji
+        sensors = api_GIOS.get_sensors_for_station(station_id)
+        if not sensors:
+            print("   Brak sensorów.")
+            continue
 
         for sensor in sensors:
-            param_name = sensor['param']['paramName']
-            print(f"  🔎 Sensor: {param_name}")
-
             # Zapis sensora do bazy
-            database.insert_sensor(sensor, station['id'])
+            insert_sensor(sensor, station_id)
+            sensor_id = sensor["id"]
+            print(f"   Sensor: {sensor['param']['paramName']}")
 
-            # Pobierz dane z sensora
-            measurements = api_GIOS.get_measurements_for_sensor(sensor['id'])
+            # Pobranie danych pomiarowych z sensora
+            measurements = api_GIOS.get_measurements_for_sensor(sensor_id)
+            count = 0
+            for m in measurements.get("values", []):
+                insert_measurement(sensor_id, m)
+                count += 1
 
-            if not measurements.get("values"):
-                print("    ⚠️  Brak danych pomiarowych.")
-                continue
+            print(f"   Zapisano {count} pomiarów.")
 
-            # Zapis pomiarów do bazy
-            for m in measurements["values"]:
-                database.insert_measurement(sensor['id'], m)
 
-    print("\n✅ Dane zostały pobrane i zapisane do bazy SQLite.")
+    print("Wszystkie dane zostały pobrane i zapisane do bazy danych.")
+
+if __name__ == "__main__":
+    fetch_and_save_all_data()

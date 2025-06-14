@@ -64,43 +64,43 @@
     <option name="sortByType" value="true" />
     <option name="sortKey" value="BY_TYPE" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python tests.Python tests in test_db.py.executor": "Run",
-    "Python.Dane GIOS.executor": "Run",
-    "Python.analysis.executor": "Run",
-    "Python.api GIOS.executor": "Run",
-    "Python.api_GIOS.executor": "Run",
-    "Python.charts.executor": "Run",
-    "Python.check_db.executor": "Run",
-    "Python.database.executor": "Run",
-    "Python.gui.executor": "Run",
-    "Python.ingest.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.sensor_selection.executor": "Run",
-    "Python.station_selection.executor": "Run",
-    "Python.testy.executor": "Run",
-    "Python.visualization.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "master",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "C:/Users/pnatalia/PycharmProjects/PythonProject/data",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python tests.Python tests in test_db.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Dane GIOS.executor&quot;: &quot;Run&quot;,
+    &quot;Python.analysis.executor&quot;: &quot;Run&quot;,
+    &quot;Python.api GIOS.executor&quot;: &quot;Run&quot;,
+    &quot;Python.api_GIOS.executor&quot;: &quot;Run&quot;,
+    &quot;Python.charts.executor&quot;: &quot;Run&quot;,
+    &quot;Python.check_db.executor&quot;: &quot;Run&quot;,
+    &quot;Python.database.executor&quot;: &quot;Run&quot;,
+    &quot;Python.gui.executor&quot;: &quot;Run&quot;,
+    &quot;Python.ingest.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.sensor_selection.executor&quot;: &quot;Run&quot;,
+    &quot;Python.station_selection.executor&quot;: &quot;Run&quot;,
+    &quot;Python.testy.executor&quot;: &quot;Run&quot;,
+    &quot;Python.visualization.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/pnatalia/PycharmProjects/PythonProject/data&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "postgresql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\pnatalia\PycharmProjects\PythonProject\data" />
@@ -113,7 +113,7 @@
       <recent name="C:\Users\pnatalia\PycharmProjects\PythonProject" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.check_db">
     <configuration name="check_db" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="PROJEKT ZALICZENIOWY" />
       <option name="ENV_FILES" value="" />

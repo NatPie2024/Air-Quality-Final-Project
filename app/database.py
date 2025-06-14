@@ -100,6 +100,55 @@ def insert_measurement(sensor_id, measurement):
         conn.commit()
         conn.close()
 
-
 def api():
     return None
+
+# pobieranie listy stacji z bazy danych
+
+def get_stations_from_db(city_name):
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT id, station_name, city, latitude, longitude
+        FROM stations
+        WHERE LOWER(city) = LOWER(?)
+    """, (city_name,))
+    rows = cur.fetchall()
+    conn.close()
+
+    stations = []
+    for row in rows:
+        station = {
+            "id": row[0],
+            "stationName": row[1],
+            "city": {"name": row[2]},
+            "gegrLat": row[3],
+            "gegrLon": row[4],
+            "addressStreet": "(z bazy)"  # jeśli chcesz, możesz rozbudować
+        }
+        stations.append(station)
+    return stations
+
+# pobieranie listy sensoró z bazy danych
+def get_sensors_from_db(station_id):
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT id, param_code, param_name
+        FROM sensors
+        WHERE station_id = ?
+    """, (station_id,))
+    rows = cur.fetchall()
+    conn.close()
+
+    sensors = []
+    for row in rows:
+        sensor = {
+            "id": row[0],
+            "param": {
+                "paramCode": row[1],
+                "paramName": row[2]
+            }
+        }
+        sensors.append(sensor)
+    return sensors
