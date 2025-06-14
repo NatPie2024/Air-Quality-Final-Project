@@ -1,66 +1,56 @@
-#mapa
+import tkinter as tk
+from tkinter import messagebox
+from prettymaps import plot_map
+import matplotlib.pyplot as plt
+from PIL import Image, ImageTk
+import io
 
-import folium
-from app import api_GIOS
+def generate_map():
+    location = city_entry.get()
+    if not location:
+        messagebox.showwarning("Brak danych", "Wpisz nazwę miasta.")
+        return
 
-def get_pm10_value(sensor_id):
-    data = api_GIOS.get_measurements_for_sensor(sensor_id)
-    values = data.get("values", [])
-    for v in values:
-        if v["value"] is not None:
-            return v["value"]  # zwracamy pierwszy dostępny pomiar
-    return None
+    try:
+        fig, ax = plt.subplots(figsize=(6, 6))
+        plot_map(
+            ax,
+            location=location,
+            radius=1000,  # promień w metrach
+            layers={
+                "buildings": {"tags": {"building": True}},
+                "streets": {"tags": {"highway": True}},
+                "water": {"tags": {"natural": "water"}},
+                "green": {"tags": {"landuse": "grass"}},
+            }
+        )
 
-def get_color_for_pm10(value):
-    if value is None:
-        return "gray"
-    elif value <= 20:
-        return "green"
-    elif value <= 50:
-        return "orange"
-    else:
-        return "red"
+        buf = io.BytesIO()
+        fig.savefig(buf, format='png')
+        buf.seek(0)
 
-def generate_station_map(param_code="PM10"):
-    print("⏬ Pobieranie mapy...")
-    stations = api_GIOS.get_all_stations()
+        img = Image.open(buf)
+        img = img.resize((400, 400))  # dopasowanie do GUI
+        tk_img = ImageTk.PhotoImage(img)
 
-    station_map = folium.Map(location=[52.4, 16.9], zoom_start=6)  # środek Polski
+        map_label.config(image=tk_img)
+        map_label.image = tk_img
 
-    for station in stations:
-        try:
-            lat = float(station["gegrLat"])
-            lon = float(station["gegrLon"])
-        except (TypeError, ValueError):
-            continue
+    except Exception as e:
+        messagebox.showerror("Błąd", f"Nie udało się wygenerować mapy:\n{e}")
 
-        # pobierz sensory tej stacji
-        sensors = api_GIOS.get_sensors_for_station(station["id"])
-        sensor = next((s for s in sensors if s["param"]["paramCode"] == param_code), None)
+# --- GUI setup ---
+root = tk.Tk()
+root.title("Mapa miasta z Prettymaps")
 
-        if not sensor:
-            color = "gray"
-            value_text = "brak danych"
-        else:
-            value = get_pm10_value(sensor["id"])
-            color = get_color_for_pm10(value)
-            value_text = f"{value} µg/m³" if value is not None else "brak danych"
+tk.Label(root, text="Wpisz miasto:").pack(pady=5)
+city_entry = tk.Entry(root, width=30)
+city_entry.pack(pady=5)
+city_entry.insert(0, "Warszawa")
 
-        folium.CircleMarker(
-            location=[lat, lon],
-            radius=7,
-            color=color,
-            fill=True,
-            fill_color=color,
-            fill_opacity=0.7,
-            popup=folium.Popup(
-                f"<b>{station['stationName']}</b><br>{station['city']['name']}<br>{param_code}: {value_text}",
-                max_width=300
-            )
-        ).add_to(station_map)
+tk.Button(root, text="Generuj mapę", command=generate_map).pack(pady=10)
 
-    # zapisz do pliku
-    station_map.save("mapa_stacji.html")
-    print("✅ Mapa zapisana jako 'mapa_stacji.html'")
+map_label = tk.Label(root)
+map_label.pack(padx=10, pady=10)
 
-#wykres
+root.mainloop()

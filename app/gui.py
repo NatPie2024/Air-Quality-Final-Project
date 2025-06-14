@@ -1,15 +1,17 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import matplotlib.pyplot as plt
-from app.station_selection import get_stations_in_city
-from app.sensor_selection import get_sensors_for_station
-from app.analysis import analyze_measurements_to_text
-from app import api_GIOS
-from app.database import insert_sensor, insert_measurement, create_tables, connect
-import pandas as pd
 from datetime import datetime, timedelta
 from tkinter import messagebox
+from tkinter import ttk
+
+import matplotlib.pyplot as plt
+import pandas as pd
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+from app import api_GIOS
+from app.analysis import analyze_measurements_to_text
+from app.database import insert_sensor, insert_measurement, create_tables, connect
+from app.sensor_selection import get_sensors_for_station
+from app.station_selection import get_stations_in_city
 
 
 class AirQualityApp:
@@ -77,7 +79,7 @@ class AirQualityApp:
 
         stations = get_stations_in_city(city)
         if not stations:
-            messagebox.showinfo("Brak", "Brak stacji w tym mieście.")
+            messagebox.showinfo("Brak", "Brak takiego miasta lub brak stacji w tym mieście.")
             return
 
         self.stations_map = {f"{s['stationName']} ({s.get('addressStreet') or 'brak'})": s["id"] for s in stations}
@@ -99,9 +101,6 @@ class AirQualityApp:
 
         self.sensors_map = {s['param']['paramName']: s for s in sensors}
         self.sensor_list["values"] = list(self.sensors_map.keys())
-
-    from datetime import datetime, timedelta
-    from tkinter import messagebox
 
     def get_data_and_plot(self):
         sensor_name = self.sensor_list.get()
@@ -151,24 +150,39 @@ class AirQualityApp:
         self.notebook.select(self.result_frame)
 
     def show_plot(self, sensor_id, date_from, date_to):
+        # Usuwanie poprzedniego wykresu
         for widget in self.canvas_frame.winfo_children():
             widget.destroy()
 
+        # Pobieranie danych z bazy
         conn = connect()
         query = "SELECT date_time, value FROM measurements WHERE sensor_id = ? ORDER BY date_time"
         df = pd.read_sql_query(query, conn, params=(sensor_id,))
         conn.close()
 
-        df["date_time"] = pd.to_datetime(df["date_time"])
+        # Konwersja daty i filtrowanie zakresu
+        df["date_time"] = pd.to_datetime(df["date_time"], errors='coerce')
+        df.dropna(subset=["date_time"], inplace=True)  # Usuwa błędne daty
+
         if date_from:
-            df = df[df["date_time"] >= pd.to_datetime(date_from)]
+            try:
+                df = df[df["date_time"] >= pd.to_datetime(date_from)]
+            except ValueError:
+                messagebox.showerror("Błąd", "Nieprawidłowa data początkowa.")
+                return
+
         if date_to:
-            df = df[df["date_time"] <= pd.to_datetime(date_to)]
+            try:
+                df = df[df["date_time"] <= pd.to_datetime(date_to)]
+            except ValueError:
+                messagebox.showerror("Błąd", "Nieprawidłowa data końcowa.")
+                return
 
         if df.empty:
             messagebox.showinfo("Brak danych", "Brak danych w podanym zakresie.")
             return
 
+        # Tworzenie wykresu
         fig, ax = plt.subplots(figsize=(7, 4))
         ax.plot(df["date_time"], df["value"], marker='o', linestyle='-')
         ax.set_title(f"Stężenie {self.sensor_list.get()}")
@@ -177,6 +191,7 @@ class AirQualityApp:
         ax.grid(True)
         fig.autofmt_xdate()
 
+        # Osadzenie wykresu w GUI
         canvas = FigureCanvasTkAgg(fig, master=self.canvas_frame)
         canvas.draw()
         canvas.get_tk_widget().pack(fill="both", expand=True)
