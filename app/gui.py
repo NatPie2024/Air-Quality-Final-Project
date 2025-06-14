@@ -8,13 +8,15 @@ from app.analysis import analyze_measurements_to_text
 from app import api_GIOS
 from app.database import insert_sensor, insert_measurement, create_tables, connect
 import pandas as pd
+from datetime import datetime, timedelta
+from tkinter import messagebox
 
 
 class AirQualityApp:
     def __init__(self, root):
         create_tables()
         self.root = root
-        self.root.title("Monitor jakości powietrza")
+        self.root.title("STAN POWIETRZA W MIASTACH")
         self.root.geometry("700x600")
 
         # Notebook (zakładki)
@@ -23,11 +25,11 @@ class AirQualityApp:
 
         # Zakładka 1: Wybór
         self.selection_frame = ttk.Frame(self.notebook)
-        self.notebook.add(self.selection_frame, text='Wybór i pobieranie')
+        self.notebook.add(self.selection_frame, text='Wybór miasta, stacji i parametrów:')
 
         # Zakładka 2: Wykres i analiza
         self.result_frame = ttk.Frame(self.notebook)
-        self.notebook.add(self.result_frame, text='Wykres i analiza')
+        self.notebook.add(self.result_frame, text='Wykres i analiza danych')
 
         self.build_selection_tab()
         self.build_result_tab()
@@ -35,26 +37,24 @@ class AirQualityApp:
     def build_selection_tab(self):
         frame = self.selection_frame
 
-        tk.Label(frame, text="Miasto:").pack(pady=5)
+        tk.Label(frame, text="Podaj miasto:").pack(pady=5)
         self.city_entry = tk.Entry(frame)
         self.city_entry.pack()
 
-        tk.Button(frame, text="Pobierz stacje", command=self.fetch_stations).pack(pady=5)
+        tk.Button(frame, text="Wybierz stację:", command=self.fetch_stations).pack(pady=5)
 
         self.station_list = ttk.Combobox(frame, state="readonly")
         self.station_list.pack(pady=5)
 
-        tk.Button(frame, text="Pobierz sensory", command=self.fetch_sensors).pack(pady=5)
+        tk.Button(frame, text="Wybierz parametr:", command=self.fetch_sensors).pack(pady=5)
         self.sensor_list = ttk.Combobox(frame, state="readonly")
         self.sensor_list.pack(pady=5)
 
-        tk.Label(frame, text="Data początkowa (YYYY-MM-DD):").pack(pady=5)
-        self.date_from_entry = tk.Entry(frame)
-        self.date_from_entry.pack()
-
-        tk.Label(frame, text="Data końcowa (YYYY-MM-DD):").pack(pady=5)
-        self.date_to_entry = tk.Entry(frame)
-        self.date_to_entry.pack()
+        tk.Label(frame, text="Wybierz zakres danych:").pack(pady=5)
+        self.range_choice = ttk.Combobox(frame, state="readonly")
+        self.range_choice["values"] = ["Ostatnie 3 dni", "Ostatnie 10 dni", "Ostatnie 30 dni"]
+        self.range_choice.current(1)
+        self.range_choice.pack()
 
         tk.Button(
             frame,
@@ -100,6 +100,9 @@ class AirQualityApp:
         self.sensors_map = {s['param']['paramName']: s for s in sensors}
         self.sensor_list["values"] = list(self.sensors_map.keys())
 
+    from datetime import datetime, timedelta
+    from tkinter import messagebox
+
     def get_data_and_plot(self):
         sensor_name = self.sensor_list.get()
         if not sensor_name:
@@ -121,15 +124,30 @@ class AirQualityApp:
                 insert_measurement(sensor_id, m)
 
         except Exception:
-            use_db = messagebox.askyesno("Błąd połączenia", "Nie udało się pobrać danych z API.\nUżyć danych z bazy?")
+            use_db = messagebox.askyesno(
+                "Błąd połączenia",
+                "Nie udało się pobrać danych z API.\nUżyć danych z bazy?"
+            )
             if not use_db:
                 return
 
-        date_from = self.date_from_entry.get() or None
-        date_to = self.date_to_entry.get() or None
+        # Zakres dat z rozwijanej listy
+        selected_range = self.range_choice.get()
+        days = 10
+        if "3" in selected_range:
+            days = 3
+        elif "30" in selected_range:
+            days = 30
 
-        self.show_plot(sensor_id, date_from, date_to)
-        self.show_analysis(sensor_id, date_from, date_to)
+        date_to = datetime.now()
+        date_from = date_to - timedelta(days=days)
+
+        # Zamiana na tekst
+        date_from_str = date_from.strftime("%Y-%m-%d")
+        date_to_str = date_to.strftime("%Y-%m-%d")
+
+        self.show_plot(sensor_id, date_from_str, date_to_str)
+        self.show_analysis(sensor_id, date_from_str, date_to_str)
         self.notebook.select(self.result_frame)
 
     def show_plot(self, sensor_id, date_from, date_to):

@@ -27,10 +27,10 @@ def analyze_measurements_to_text(sensor_id, date_from=None, date_to=None):
     trend = "wzrastający" if df["value"].iloc[-1] > df["value"].iloc[0] else "malejący"
 
     return (
-        f"📊 Analiza danych:\n"
-        f"🔻 Min: {min_val:.2f} µg/m³ o {min_time}\n"
-        f"🔺 Max: {max_val:.2f} µg/m³ o {max_time}\n"
-        f"⚖️  Średnia: {avg_val:.2f} µg/m³\n"
-        f"📈 Trend: {trend}"
+        f" Analiza danych:\n"
+        f" Min: {min_val:.2f} µg/m³ o {min_time}\n"
+        f" Max: {max_val:.2f} µg/m³ o {max_time}\n"
+        f" Średnia: {avg_val:.2f} µg/m³\n"
+        f" Trend: {trend}"
     )
 
