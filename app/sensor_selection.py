@@ -1,35 +1,37 @@
 from app import api_GIOS
 
 def select_sensor_from_station(station_id):
+    """
+    Interaktywny wybór sensora z terminala dla danej stacji.
+    """
     sensors = api_GIOS.get_sensors_for_station(station_id)
 
     if not sensors:
-        print("❌ Brak czujników dla tej stacji.")
+        print("Brak sensorów dla tej stacji.")
         return None
 
-    print("\n📋 Dostępne czujniki pomiarowe:")
+    print(f"\nCzujniki dostępne w stacji ID: {station_id}")
     for sensor in sensors:
-        param = sensor["param"]
-        print(f"  ID: {sensor['id']} | {param['paramName']} ({param['paramCode']})")
+        param = sensor.get("param", {})
+        print(f"  ID: {sensor['id']} | {param.get('paramName')} ({param.get('paramFormula')})")
 
-    while True:
-        user_input = input("\n🔎 Podaj ID wybranego czujnika (lub 'q' aby wyjść): ")
+    try:
+        selected_id = int(input("\nPodaj ID czujnika: "))
+    except ValueError:
+        print("Niepoprawny numer.")
+        return None
 
-        if user_input.lower() == 'q':
-            print("⏹️ Anulowano wybór czujnika.")
-            return None
+    selected_sensor = next((s for s in sensors if s["id"] == selected_id), None)
+    if not selected_sensor:
+        print("Nie znaleziono czujnika o podanym ID.")
+        return None
 
-        try:
-            selected_id = int(user_input)
-        except ValueError:
-            print("❌ Niepoprawny numer. Spróbuj ponownie.")
-            continue
+    return selected_sensor
 
-        match = next((s for s in sensors if s["id"] == selected_id), None)
-        if match:
-            param = match["param"]
-            print(f"\n✅ Wybrano czujnik: {param['paramName']} ({param['paramCode']})")
-            return match
-        else:
-            print("❌ Nie znaleziono czujnika o podanym ID. Spróbuj ponownie.")
+
+def get_sensors_for_station(station_id):
+    """
+    Zwraca listę sensorów w danej stacji (dla GUI).
+    """
+    return api_GIOS.get_sensors_for_station(station_id)
 

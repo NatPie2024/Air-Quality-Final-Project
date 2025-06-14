@@ -1,22 +1,13 @@
-import sqlite3
+from app.database import connect
 import pandas as pd
-import os
 
-DB_PATH = os.path.join("data", "air_quality.db")
-
-def analyze_measurements(sensor_id, date_from=None, date_to=None):
-    conn = sqlite3.connect(DB_PATH)
-    query = """
-        SELECT date_time, value
-        FROM measurements
-        WHERE sensor_id = ?
-        ORDER BY date_time
-    """
+def analyze_measurements_to_text(sensor_id, date_from=None, date_to=None):
+    conn = connect()
+    query = "SELECT value, date_time FROM measurements WHERE sensor_id = ? ORDER BY date_time"
     df = pd.read_sql_query(query, conn, params=(sensor_id,))
     conn.close()
 
     df["date_time"] = pd.to_datetime(df["date_time"])
-    df = df.dropna(subset=["value"])
 
     if date_from:
         df = df[df["date_time"] >= pd.to_datetime(date_from)]
@@ -24,8 +15,7 @@ def analyze_measurements(sensor_id, date_from=None, date_to=None):
         df = df[df["date_time"] <= pd.to_datetime(date_to)]
 
     if df.empty:
-        print("❌ Brak danych w podanym zakresie.")
-        return
+        return "Brak danych do analizy."
 
     min_val = df["value"].min()
     max_val = df["value"].max()
@@ -34,17 +24,13 @@ def analyze_measurements(sensor_id, date_from=None, date_to=None):
     min_time = df[df["value"] == min_val]["date_time"].iloc[0]
     max_time = df[df["value"] == max_val]["date_time"].iloc[0]
 
-    start_val = df["value"].iloc[0]
-    end_val = df["value"].iloc[-1]
-    if end_val > start_val:
-        trend = "📈 rosnący"
-    elif end_val < start_val:
-        trend = "📉 malejący"
-    else:
-        trend = "➖ stabilny"
+    trend = "wzrastający" if df["value"].iloc[-1] > df["value"].iloc[0] else "malejący"
 
-    print("\n📊 Analiza danych:")
-    print(f"🔻 Min: {min_val:.2f} µg/m³ o {min_time}")
-    print(f"🔺 Max: {max_val:.2f} µg/m³ o {max_time}")
-    print(f"⚖️  Średnia: {avg_val:.2f} µg/m³")
-    print(f"📈 Trend: {trend}")
+    return (
+        f"📊 Analiza danych:\n"
+        f"🔻 Min: {min_val:.2f} µg/m³ o {min_time}\n"
+        f"🔺 Max: {max_val:.2f} µg/m³ o {max_time}\n"
+        f"⚖️  Średnia: {avg_val:.2f} µg/m³\n"
+        f"📈 Trend: {trend}"
+    )
+

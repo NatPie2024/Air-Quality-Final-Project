@@ -1,7 +1,12 @@
 import sqlite3
 import os
 
-DB_PATH = os.path.join("data", "air_quality.db")
+# ✅ Ustal ścieżkę bezwzględną do katalogu "data/" w katalogu głównym projektu
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+os.makedirs(DATA_DIR, exist_ok=True)  # jeśli folder nie istnieje, utwórz go
+
+DB_PATH = os.path.join(DATA_DIR, "air_quality.db")
 
 def connect():
     return sqlite3.connect(DB_PATH)
@@ -44,6 +49,8 @@ def create_tables():
 
     conn.commit()
     conn.close()
+
+# ... pozostałe funkcje insert_station, insert_sensor, insert_measurement pozostają bez zmian
 
 def insert_station(station):
     conn = connect()
