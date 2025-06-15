@@ -1,7 +1,7 @@
 import sqlite3
 import os
 
-# ✅ Ustal ścieżkę bezwzględną do katalogu "data/" w katalogu głównym projektu
+# Ustal ścieżkę bezwzględną do katalogu "data/" w katalogu głównym projektu
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, "data")
 os.makedirs(DATA_DIR, exist_ok=True)  # jeśli folder nie istnieje, utwórz go
@@ -129,7 +129,7 @@ def get_stations_from_db(city_name):
         stations.append(station)
     return stations
 
-# pobieranie listy sensoró z bazy danych
+# pobieranie listy sensorów z bazy danych
 def get_sensors_from_db(station_id):
     conn = connect()
     cur = conn.cursor()
