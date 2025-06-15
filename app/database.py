@@ -1,5 +1,15 @@
 import sqlite3
 import os
+import logging
+
+# Logger setup
+logger = logging.getLogger("Database")
+logger.setLevel(logging.INFO)
+if not logger.hasHandlers():
+    handler = logging.StreamHandler()
+    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
 
 # Ustal ścieżkę bezwzględną do katalogu "data/" w katalogu głównym projektu
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -9,9 +19,11 @@ os.makedirs(DATA_DIR, exist_ok=True)  # jeśli folder nie istnieje, utwórz go
 DB_PATH = os.path.join(DATA_DIR, "air_quality.db")
 
 def connect():
+    logger.info("Nawiązywanie połączenia z bazą danych")
     return sqlite3.connect(DB_PATH)
 
 def create_tables():
+    logger.info("Tworzenie tabel w bazie danych, jeśli nie istnieją")
     conn = connect()
     cur = conn.cursor()
 
@@ -49,10 +61,10 @@ def create_tables():
 
     conn.commit()
     conn.close()
-
-# ... pozostałe funkcje insert_station, insert_sensor, insert_measurement pozostają bez zmian
+    logger.info("Tabele utworzone lub już istniały")
 
 def insert_station(station):
+    logger.info(f"Wstawianie stacji do bazy: {station['stationName']}, ID: {station['id']}")
     conn = connect()
     cur = conn.cursor()
     cur.execute("""
@@ -69,8 +81,10 @@ def insert_station(station):
     ))
     conn.commit()
     conn.close()
+    logger.info("Stacja dodana (lub już istniała)")
 
 def insert_sensor(sensor, station_id):
+    logger.info(f"Wstawianie sensora ID: {sensor['id']} do stacji ID: {station_id}")
     conn = connect()
     cur = conn.cursor()
     cur.execute("""
@@ -84,9 +98,11 @@ def insert_sensor(sensor, station_id):
     ))
     conn.commit()
     conn.close()
+    logger.info("Sensor dodany (lub już istniał)")
 
 def insert_measurement(sensor_id, measurement):
     if measurement['value'] is not None:
+        logger.info(f"Dodawanie pomiaru dla sensora ID: {sensor_id}, data: {measurement['date']}, wartość: {measurement['value']}")
         conn = connect()
         cur = conn.cursor()
         cur.execute("""
@@ -99,13 +115,16 @@ def insert_measurement(sensor_id, measurement):
         ))
         conn.commit()
         conn.close()
+        logger.info("Pomiar dodany")
+    else:
+        logger.warning(f"Pominięto pomiar bez wartości dla sensora ID: {sensor_id}")
 
 def api():
     return None
 
 # pobieranie listy stacji z bazy danych
-
 def get_stations_from_db(city_name):
+    logger.info(f"Pobieranie stacji z bazy danych dla miasta: {city_name}")
     conn = connect()
     cur = conn.cursor()
     cur.execute("""
@@ -124,13 +143,15 @@ def get_stations_from_db(city_name):
             "city": {"name": row[2]},
             "gegrLat": row[3],
             "gegrLon": row[4],
-            "addressStreet": "(z bazy)"  # jeśli chcesz, możesz rozbudować
+            "addressStreet": "(z bazy)"
         }
         stations.append(station)
+    logger.info(f"Znaleziono {len(stations)} stacji w bazie danych")
     return stations
 
 # pobieranie listy sensorów z bazy danych
 def get_sensors_from_db(station_id):
+    logger.info(f"Pobieranie sensorów z bazy danych dla stacji ID: {station_id}")
     conn = connect()
     cur = conn.cursor()
     cur.execute("""
@@ -151,4 +172,13 @@ def get_sensors_from_db(station_id):
             }
         }
         sensors.append(sensor)
+    logger.info(f"Znaleziono {len(sensors)} sensorów w bazie danych")
     return sensors
+
+def get_city_names():
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute("SELECT DISTINCT city FROM stations ORDER BY city")
+    rows = cur.fetchall()
+    conn.close()
+    return [row[0] for row in rows if row[0]]
