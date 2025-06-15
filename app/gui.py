@@ -13,9 +13,10 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 from app import api_GIOS
 from app.analysis import analyze_measurements_to_text
-from app.database import insert_sensor, insert_measurement, create_tables, connect, get_city_names
+from app.database import insert_sensor, insert_measurement, create_tables, connect
 from app.sensor_selection import get_sensors_for_station
 from app.station_selection import get_stations_in_city
+from app.constants import CITY_NAMES
 
 # Logger setup
 logger = logging.getLogger("AirQualityApp")
@@ -41,7 +42,7 @@ THEME = {
 class AutocompleteCombobox(ttk.Combobox):
     def set_completion_list(self, completion_list):
         self._completion_list = sorted(completion_list, key=str.lower)
-        self["values"] = [city for city in self._completion_list]  # Dodanie dwóch spacji
+        self["values"] = [city for city in self._completion_list]
         self.bind('<KeyRelease>', self._handle_keyrelease)
 
     def _handle_keyrelease(self, event):
@@ -107,8 +108,7 @@ class AirQualityApp:
         tk.Label(frame, text="Podaj miasto:", font=THEME["font"], bg=THEME["bg_color"]).pack(pady=10)
         self.city_entry = AutocompleteCombobox(frame, font=THEME["font"])
         self.city_entry.pack()
-        city_names = get_city_names()
-        self.city_entry.set_completion_list(city_names)
+        self.city_entry.set_completion_list(CITY_NAMES)
 
         self._add_button(frame, "Pobierz stację", self.fetch_stations)
         self.station_list = ttk.Combobox(frame, state="readonly")
