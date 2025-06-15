@@ -3,6 +3,10 @@ from tkinter import ttk, messagebox
 from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 import pandas as pd
+import folium
+import webbrowser
+import tempfile
+
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 from app import api_GIOS
@@ -48,14 +52,26 @@ class AirQualityApp:
 
     def _init_selection_tab(self):
         self.selection_frame = ttk.Frame(self.notebook)
-        self.notebook.add(self.selection_frame, text='Wybierz miasta, stacji i parametr:')
-
+        self.notebook.add(self.selection_frame, text='Wybierz miasto, stację i parametr:')
         self._build_selection_tab()
 
     def _init_result_tab(self):
         self.result_frame = ttk.Frame(self.notebook)
         self.notebook.add(self.result_frame, text='Wykres i analiza danych')
+        self._init_map_tab()
         self._build_result_tab()
+
+    def _init_map_tab(self):
+        self.map_frame = ttk.Frame(self.notebook)
+        self.notebook.add(self.map_frame, text='Mapa stacji')
+
+        ttk.Label(
+            self.map_frame,
+            text="Kliknij przycisk, aby zobaczyć mapę stacji w wybranym mieście.",
+            font=THEME["font"]
+        ).pack(pady=10)
+
+        self._add_button(self.map_frame, "Pokaż mapę", self.show_station_map)
 
     def _build_selection_tab(self):
         frame = self.selection_frame
@@ -72,7 +88,7 @@ class AirQualityApp:
         self.sensor_list = ttk.Combobox(frame, state="readonly")
         self.sensor_list.pack(pady=10)
 
-        self._add_button(frame, "Aktualizuj dane z API", self.update_data)
+        self._add_button(frame, "Pobierz aktualne dane sensorów", self.update_data)
 
         tk.Label(frame, text="Wybierz zakres danych:", font=THEME["font"], bg=THEME["bg_color"]).pack(pady=10)
         self.range_choice = ttk.Combobox(frame, state="readonly")
@@ -208,6 +224,34 @@ class AirQualityApp:
         text = analyze_measurements_to_text(sensor_id, date_from, date_to)
         self.analysis_text.delete("1.0", tk.END)
         self.analysis_text.insert(tk.END, text)
+
+    def show_station_map(self):
+        city = self.city_entry.get()
+        if not city:
+            messagebox.showwarning("Uwaga", "Wpisz nazwę miasta.")
+            return
+
+        conn = connect()
+        cur = conn.cursor()
+        cur.execute("SELECT station_name, latitude, longitude FROM stations WHERE LOWER(city) = LOWER(?)", (city,))
+        stations = cur.fetchall()
+        conn.close()
+
+        if not stations:
+            messagebox.showinfo("Brak", f"Brak stacji w mieście {city}")
+            return
+
+        # Środek mapy: pierwsza stacja
+        map_center = [stations[0][1], stations[0][2]]
+        fmap = folium.Map(location=map_center, zoom_start=12)
+
+        for name, lat, lon in stations:
+            folium.Marker([lat, lon], popup=name).add_to(fmap)
+
+        tmp_file = tempfile.NamedTemporaryFile(suffix=".html", delete=False)
+        fmap.save(tmp_file.name)
+        webbrowser.open(tmp_file.name)
+
 
 def run_gui_with_tabs():
     root = tk.Tk()
