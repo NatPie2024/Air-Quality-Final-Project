@@ -8,7 +8,7 @@ import logging
 from update_db import update_city_measurements
 import folium
 import matplotlib.pyplot as plt
-import pandas as pdv
+import pandas as pd
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 from app import api_GIOS
