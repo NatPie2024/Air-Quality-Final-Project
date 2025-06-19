@@ -1,33 +1,32 @@
-import tempfile
 import tkinter as tk
-import webbrowser
-from datetime import datetime, timedelta
 from tkinter import ttk, messagebox
+from geopy.geocoders import Nominatim
+from geopy.distance import geodesic
 import logging
+from datetime import datetime, timedelta
+import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import folium
+import tempfile
+import webbrowser
 
 from update_db import update_city_measurements
-import folium
-import matplotlib.pyplot as plt
-import pandas as pd
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-
 from app import api_GIOS
 from app.analysis import analyze_measurements_to_text
-from app.database import insert_sensor, insert_measurement, create_tables, connect
+from app.database import create_tables, connect, insert_sensor, insert_measurement
 from app.sensor_selection import get_sensors_for_station
 from app.station_selection import get_stations_in_city
 from app.constants import CITY_NAMES
 
-# Logger setup
+# Logger
 logger = logging.getLogger("AirQualityApp")
 logger.setLevel(logging.INFO)
 if not logger.hasHandlers():
-    handler = logging.StreamHandler()
-    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
+    h = logging.StreamHandler()
+    h.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+    logger.addHandler(h)
 
-# Styl
 THEME = {
     "font": ("Segoe UI", 12),
     "title_font": ("Segoe UI", 14, "bold"),
@@ -42,55 +41,49 @@ THEME = {
 class AutocompleteCombobox(ttk.Combobox):
     def set_completion_list(self, completion_list):
         self._completion_list = sorted(completion_list, key=str.lower)
-        self["values"] = [city for city in self._completion_list]
+        self["values"] = self._completion_list
         self.bind('<KeyRelease>', self._handle_keyrelease)
 
     def _handle_keyrelease(self, event):
         value = self.get().strip().lower()
-        if value == '':
-            data = self._completion_list
-        else:
-            data = [item for item in self._completion_list if item.lower().startswith(value)]
-        self["values"] = [city for city in data]
+        data = [w for w in self._completion_list if w.lower().startswith(value)] if value else self._completion_list
+        self["values"] = data
         self.event_generate('<Down>')
-
 
 class AirQualityApp:
     def __init__(self, root):
-        logger.info("Inicjalizacja aplikacji AirQualityApp")
         create_tables()
         self.root = root
-        self.root.title(" STAN POWIETRZA W MIASTACH")
-        self.root.geometry("700x600")
+        self.root.title("STAN POWIETRZA W MIASTACH")
+        self.root.geometry("1000x600")
         self.root.configure(bg=THEME["bg_color"])
-
         self._setup_style()
 
         self.notebook = ttk.Notebook(root)
-        self.notebook.pack(fill='both', expand=True)
+        self.notebook.pack(fill="both", expand=True)
 
         self._init_selection_tab()
         self._init_result_tab()
+        self._init_map_tab()
 
     def _setup_style(self):
-        style = ttk.Style()
-        style.theme_use("clam")
-        style.configure("TFrame", background=THEME["bg_color"])
-        style.configure("TLabel", background=THEME["bg_color"], font=THEME["font"])
-        style.configure("TButton", font=THEME["font"], padding=10)
-        style.configure("TCombobox", font=THEME["font"])
-        style.configure("TLabelframe", background=THEME["bg_color"], font=THEME["title_font"])
-        style.configure("TLabelframe.Label", background=THEME["bg_color"], font=THEME["title_font"])
+        s = ttk.Style()
+        s.theme_use("clam")
+        s.configure("TFrame", background=THEME["bg_color"])
+        s.configure("TLabel", background=THEME["bg_color"], font=THEME["font"])
+        s.configure("TButton", font=THEME["font"], padding=10)
+        s.configure("TCombobox", font=THEME["font"])
+        s.configure("TLabelframe", background=THEME["bg_color"], font=THEME["title_font"])
+        s.configure("TLabelframe.Label", background=THEME["bg_color"], font=THEME["title_font"])
 
     def _init_selection_tab(self):
         self.selection_frame = ttk.Frame(self.notebook)
-        self.notebook.add(self.selection_frame, text='Wybierz miasto, stację i parametr:')
-        self._build_selection_tab()
+        self.notebook.add(self.selection_frame, text="Wybierz miasto, stację i parametr")
+        self._build_selection_tab(self.selection_frame)
 
     def _init_result_tab(self):
         self.result_frame = ttk.Frame(self.notebook)
         self.notebook.add(self.result_frame, text='Wykres i analiza danych')
-        self._init_map_tab()
         self._build_result_tab()
 
     def _init_map_tab(self):
@@ -105,20 +98,27 @@ class AirQualityApp:
 
         self._add_button(self.map_frame, "Pokaż mapę", self.show_station_map)
 
-    def _build_selection_tab(self):
-        frame = self.selection_frame
+    def _build_selection_tab(self, frame):
+        main = ttk.Frame(frame)
+        main.pack(fill="both", expand=True, padx=10, pady=10)
+        left = ttk.Frame(main)
+        left.pack(side="left", fill="both", expand=True, padx=(0,5))
+        right = ttk.Frame(main)
+        right.pack(side="right", fill="both", expand=False, padx=(5,0))
 
-        city_frame = ttk.LabelFrame(frame, text="Wybór miasta")
+        # — LEWA KOLUMNA —
+        # Miasto
+        city_frame = ttk.LabelFrame(left, text="Wybór miasta")
         city_frame.pack(pady=10, padx=10, fill="x")
 
-        tk.Label(city_frame, text="Miasto:", font=THEME["font"], bg=THEME["bg_color"]).grid(row=0, column=0, padx=5,
-                                                                                            pady=5, sticky="w")
+        tk.Label(city_frame, text="Miasto:", font=THEME["font"], bg=THEME["bg_color"]).grid(
+            row=0, column=0, padx=5, pady=5, sticky="w"
+        )
+
         self.city_entry = AutocompleteCombobox(city_frame, font=THEME["font"])
+        self.city_entry.set_completion_list(CITY_NAMES)
         self.city_entry.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
         city_frame.columnconfigure(1, weight=1)
-
-        # Ustawienie listy miast z constants.py
-        self.city_entry.set_completion_list(CITY_NAMES)
 
         fetch_station_btn = tk.Button(
             city_frame, text="Pobierz stację", command=self.fetch_stations,
@@ -127,8 +127,10 @@ class AirQualityApp:
         )
         fetch_station_btn.grid(row=1, column=0, columnspan=2, pady=5)
 
-        station_frame = ttk.LabelFrame(frame, text="Wybór stacji i sensora")
+        # --- Stacja i sensor ---
+        station_frame = ttk.LabelFrame(left, text="Wybór stacji i sensora")
         station_frame.pack(pady=10, padx=10, fill="x")
+        station_frame.columnconfigure(0, weight=1)
 
         self.station_list = ttk.Combobox(station_frame, state="readonly")
         self.station_list.grid(row=0, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
@@ -150,25 +152,85 @@ class AirQualityApp:
         )
         update_btn.grid(row=3, column=0, columnspan=2, pady=5)
 
-        station_frame.columnconfigure(0, weight=1)
-
-        range_frame = ttk.LabelFrame(frame, text="Zakres danych i analiza")
+        # --- Zakres i przyciski ---
+        range_frame = ttk.LabelFrame(left, text="Zakres danych i analiza")
         range_frame.pack(pady=10, padx=10, fill="x")
+        range_frame.columnconfigure(1, weight=1)
 
-        tk.Label(range_frame, text="Zakres:", font=THEME["font"], bg=THEME["bg_color"]).grid(row=0, column=0, padx=5,
-                                                                                             pady=5, sticky="w")
+        tk.Label(range_frame, text="Zakres:", font=THEME["font"], bg=THEME["bg_color"]).grid(
+            row=0, column=0, padx=5, pady=5, sticky="w"
+        )
+
         self.range_choice = ttk.Combobox(range_frame, state="readonly")
         self.range_choice["values"] = ["Ostatnie 3 dni", "Ostatnie 10 dni", "Ostatnie 30 dni"]
         self.range_choice.current(1)
         self.range_choice.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
-        range_frame.columnconfigure(1, weight=1)
 
         analyze_btn = tk.Button(
             range_frame, text="Pobierz dane, rysuj wykres i analizuj", command=self.get_data_and_plot,
             bg=THEME["btn_bg"], fg=THEME["btn_fg"], activebackground=THEME["btn_active"],
             font=THEME["font"], relief="flat", bd=0
         )
-        analyze_btn.grid(row=1, column=0, columnspan=2, pady=10)
+        analyze_btn.grid(row=1, column=0, columnspan=1, pady=10, padx=5, sticky="ew")
+
+        map_btn = tk.Button(
+            range_frame, text="Pokaż mapę stacji", command=self.show_station_map,
+            bg=THEME["btn_bg"], fg=THEME["btn_fg"], activebackground=THEME["btn_active"],
+            font=THEME["font"], relief="flat", bd=0
+        )
+        map_btn.grid(row=1, column=1, columnspan=1, pady=10, padx=5, sticky="ew")
+
+        # — PRAWA KOLUMNA —
+        radius_frame = ttk.LabelFrame(right, text="Stacje w promieniu od lokalizacji")
+        radius_frame.pack(fill="both", pady=5, expand=True)
+        ttk.Label(radius_frame, text="Lokalizacja:", font=THEME["font"]).pack(anchor="w", padx=5, pady=5)
+        self.entry_lokalizacja = ttk.Entry(radius_frame)
+        self.entry_lokalizacja.pack(fill="x", padx=5, pady=5)
+        ttk.Label(radius_frame, text="Promień (km):", font=THEME["font"]).pack(anchor="w", padx=5, pady=5)
+        self.entry_promien = ttk.Entry(radius_frame)
+        self.entry_promien.pack(fill="x", padx=5, pady=5)
+        tk.Button(radius_frame, text="Szukaj stacje", command=self._find_station_in_range,
+                  bg=THEME["btn_bg"], fg=THEME["btn_fg"], activebackground=THEME["btn_active"],
+                  relief="flat", bd=0).pack(padx=5, pady=10)
+        self.listbox_wyniki = tk.Listbox(radius_frame, height=10)
+        self.listbox_wyniki.pack(fill="both", expand=True, padx=5, pady=5)
+        self.listbox_wyniki.bind("<Double-1>", self._on_station_selected_from_radius)
+
+    def _find_station_in_range(self):
+        try:
+            prom = float(self.entry_promien.get())
+        except ValueError:
+            return messagebox.showerror("Błąd", "Nieprawidłowy promień")
+        loc = self.entry_lokalizacja.get()
+        geo = Nominatim(user_agent="aq-app").geocode(loc)
+        if not geo:
+            return messagebox.showerror("Błąd", "Nie znaleziono lokalizacji")
+        conn = connect(); cur = conn.cursor()
+        cur.execute("SELECT station_name, latitude, longitude FROM stations")
+        rows = cur.fetchall(); conn.close()
+        results = [r for r in rows if geodesic((geo.latitude, geo.longitude),(r[1],r[2])).km <= prom]
+        self.listbox_wyniki.delete(0, tk.END)
+        if not results:
+            return self.listbox_wyniki.insert(tk.END, "Brak stacji w promieniu")
+        for r in results:
+            self.listbox_wyniki.insert(tk.END, f"{r[0]}")
+
+    def _on_station_selected_from_radius(self, event):
+        sel = self.listbox_wyniki.curselection()
+        if not sel: return
+        name = self.listbox_wyniki.get(sel[0])
+        conn = connect(); cur = conn.cursor()
+        cur.execute("SELECT city FROM stations WHERE station_name=?", (name,))
+        ct = cur.fetchone(); conn.close()
+        if ct: self.city_entry.set(ct[0]); self.fetch_stations()
+        self.root.after(200, lambda: self._select_station_and_fetch(name))
+
+    def _select_station_and_fetch(self, station_name):
+        for i,val in enumerate(self.station_list["values"]):
+            if val.startswith(station_name):
+                self.station_list.current(i)
+                self.fetch_sensors()
+                break
 
     def update_database(self):
         city = self.city_entry.get()
@@ -210,9 +272,10 @@ class AirQualityApp:
             loading_window.grab_release()
             loading_window.destroy()
 
-            # messagebox pojawia się tuż po zamknięciu loading_window (zachowuje pozycję)
-            self.root.after(100,
-                            lambda: messagebox.showinfo("Sukces", f"Dane dla miasta '{city}' zostały zaktualizowane."))
+            self.root.after(100, lambda: self.show_success_window(
+                f"Dane dla miasta '{city}' zostały zaktualizowane.", pos_x, pos_y
+            ))
+
             logger.info(f"Pomyślnie zaktualizowano dane dla miasta: {city}")
 
         except Exception as e:
@@ -244,6 +307,7 @@ class AirQualityApp:
     def fetch_stations(self):
         city = self.city_entry.get()
         logger.info(f"Pobieranie stacji dla miasta: {city}")
+
         # Czyszczenie pól
         self.station_list.set("")
         self.station_list["values"] = []
@@ -261,9 +325,21 @@ class AirQualityApp:
             messagebox.showinfo("Brak", "Brak takiego miasta lub brak stacji w tym mieście.")
             return
 
-        self.stations_map = {f"{s['stationName']} ({s.get('addressStreet') or 'brak'})": s["id"] for s in stations}
-        self.station_list["values"] = list(self.stations_map.keys())
-        logger.info(f"Znaleziono {len(self.stations_map)} stacji w mieście: {city}")
+        # Zbuduj mapę stacji
+        self.stations_map = {
+            f"{s['stationName']} ({s.get('addressStreet') or 'brak'})": s["id"]
+            for s in stations
+        }
+
+        values = list(self.stations_map.keys())
+        self.station_list["values"] = values
+        logger.info(f"Znaleziono {len(values)} stacji w mieście: {city}")
+
+        # AUTOMATYCZNE ustawienie pierwszej stacji
+        if values:
+            self.station_list.current(0)
+            self.selected_station_id = self.stations_map[values[0]]
+            self.fetch_sensors()
 
     def fetch_sensors(self):
         station_name = self.station_list.get()
@@ -281,9 +357,18 @@ class AirQualityApp:
             messagebox.showinfo("Brak", "Brak sensorów.")
             return
 
-        self.sensors_map = {s['param']['paramName']: s for s in sensors}
-        self.sensor_list["values"] = list(self.sensors_map.keys())
-        logger.info(f"Znaleziono {len(self.sensors_map)} sensorów.")
+        self.sensors_map = {
+            s['param']['paramName']: s for s in sensors
+        }
+        values = list(self.sensors_map.keys())
+        self.sensor_list["values"] = values
+        logger.info(f"Znaleziono {len(values)} sensorów.")
+
+        # AUTOMATYCZNE wybranie pierwszego sensora
+        if values:
+            self.sensor_list.current(0)
+            selected_sensor = self.sensors_map[values[0]]
+            logger.info(f"Automatycznie wybrano sensor: {values[0]}")
 
     def get_data_and_plot(self):
         sensor_name = self.sensor_list.get()
@@ -393,6 +478,27 @@ class AirQualityApp:
         tmp_file = tempfile.NamedTemporaryFile(suffix=".html", delete=False)
         fmap.save(tmp_file.name)
         webbrowser.open(tmp_file.name)
+
+    def show_success_window(self, message, x, y, width=400, height=150):
+        win = tk.Toplevel(self.root)
+        win.title("Sukces")
+        win.geometry(f"{width}x{height}+{x}+{y}")
+        win.configure(bg=THEME["bg_color"])
+        win.resizable(False, False)
+
+        label = tk.Label(
+            win, text=message, font=THEME["font"], bg=THEME["bg_color"],
+            wraplength=width - 40, justify="center"
+        )
+        label.pack(padx=20, pady=(20, 10))
+
+        ok_btn = tk.Button(
+            win, text="OK", command=win.destroy,
+            bg=THEME["btn_bg"], fg=THEME["btn_fg"], activebackground=THEME["btn_active"],
+            font=THEME["font"], relief="flat", bd=0, width=10
+        )
+        ok_btn.pack(pady=(0, 15))
+
 
 def run_gui_with_tabs():
     root = tk.Tk()
