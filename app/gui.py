@@ -11,7 +11,7 @@ import folium
 import tempfile
 import webbrowser
 
-from update_db import update_city_measurements
+from app.update_db import update_city_measurements
 from app import api_GIOS
 from app.analysis import analyze_measurements_to_text
 from app.database import create_tables, connect, insert_sensor, insert_measurement
