@@ -5,7 +5,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[('data/air_quality.db', 'data')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

@@ -1,22 +1,24 @@
-import sqlite3
+import sys
 import os
+import sqlite3
 import logging
 
-# Logger setup
-logger = logging.getLogger("Database")
-logger.setLevel(logging.INFO)
-if not logger.hasHandlers():
-    handler = logging.StreamHandler()
-    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
+logger = logging.getLogger(__name__)
 
-# Ustal ścieżkę bezwzględną do katalogu "data/" w katalogu głównym projektu
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATA_DIR = os.path.join(BASE_DIR, "data")
-os.makedirs(DATA_DIR, exist_ok=True)  # jeśli folder nie istnieje, utwórz go
+def resource_path(relative_path):
+    #Zwraca ścieżkę do pliku zarówno w .py jak i .exe (PyInstaller)
+    try:
+        base_path = sys._MEIPASS  # działa w PyInstallerze
+    except AttributeError:
+        base_path = os.path.abspath(".")  # działa w trybie dev
+    return os.path.join(base_path, relative_path)
 
-DB_PATH = os.path.join(DATA_DIR, "air_quality.db")
+DB_PATH = resource_path(os.path.join("data", "air_quality.db"))
+
+def connect():
+    logger.info(f"Nawiązywanie połączenia z bazą danych: {DB_PATH}")
+    return sqlite3.connect(DB_PATH)
+
 
 def connect():
     logger.info("Nawiązywanie połączenia z bazą danych")
