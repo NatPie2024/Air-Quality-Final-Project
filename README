@@ -1,0 +1,61 @@
+JAKOŚĆ POWIETRZA W MIASTACH:
+
+Aplikacja desktopowa z graficznym interfejsem użytkownika (GUI) oparta na Tkinterze, umożliwiająca monitorowanie jakości powietrza w polskich miastach na podstawie danych z GIOŚ.
+
+FUNKCJE:
+- Przegląd jakości powietrza w miastach i na stacjach GIOŚ
+- Wybór parametrów (PM10, PM2.5, O3, CO, NO2, SO2)
+- Wyszukiwanie stacji w promieniu od podanej lokalizacji
+- Aktualizacja danych pomiarowych z API GIOŚ
+- Zapis danych w lokalnej bazie SQLite (`air_quality.db`)
+- Eksport do plików
+- Przetestowana logika – testy jednostkowe z `pytest`
+- Kompilacja do `.exe` z pomocą PyInstaller
+
+STRUKTURA PROJEKTU:
+Air-Quality-Final-Project/
+├── app/                            # Moduły aplikacji
+│   ├── visualizations/            # Wizualizacje (np. mapy, wykresy)
+│   │   └── __init__.py
+│   ├── analysis.py                # Analiza danych pomiarowych
+│   ├── api_GIOS.py                # Interfejs do API GIOŚ
+│   ├── constants.py               # Stałe aplikacji
+│   ├── database.py                # Obsługa połączeń z bazą danych
+│   ├── gui.py                     # Główne GUI aplikacji (Tkinter)
+│   ├── ingest.py                  # Wczytywanie danych do bazy
+│   ├── sensor_selection.py        # Logika wyboru sensora
+│   ├── station_selection.py       # Logika wyboru stacji
+│   └── update_db.py               # Aktualizacja danych z GIOŚ
+│
+├── build/                         # Folder roboczy PyInstaller (tworzony automatycznie)
+├── data/                          # Zewnętrzne dane (lokalna baza danych SQLite)
+│   └── air_quality.db
+│
+├── dist/                          # Folder z gotowym plikiem .exe po kompilacji
+│   └── main.exe (domyślnie)
+│
+├── tests/                         # Testy jednostkowe
+│   ├── test_app.py
+│   └── mapa_stacji.html          # Podgląd mapy (np. test lokalizacji stacji)
+│
+├── main.py                        # Punkt wejścia aplikacji
+├── main.spec                      # Konfiguracja PyInstaller
+├── README.md                      # Dokumentacja projektu
+
+
+JAK URUCHOMIĆ:
+
+# Z poziomu PyCharm (tryb deweloperski)
+
+1. Otwórz projekt w PyCharmie.
+2. Kliknij prawym przyciskiem myszy na `main.py` i wybierz **Run 'main'**.
+3. Aplikacja uruchomi się z graficznym interfejsem.
+
+
+# Jako samodzielna aplikacja `.exe`
+
+1. Wejdź do folderu Air-Quality-Final-Project
+2. Uruchom plik `START.exe`
+3. Aplikacja otworzy się bez potrzeby instalowania Pythona.
+
+
