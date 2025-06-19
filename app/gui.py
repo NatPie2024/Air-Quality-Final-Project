@@ -211,7 +211,7 @@ class AirQualityApp:
         results = [r for r in rows if geodesic((geo.latitude, geo.longitude),(r[1],r[2])).km <= prom]
         self.listbox_wyniki.delete(0, tk.END)
         if not results:
-            return self.listbox_wyniki.insert(tk.END, "Brak stacji w promieniu")
+            return self.listbox_wyniki.insert(tk.END, "Błędna nazwa lub brak stacji w promieniu")
         for r in results:
             self.listbox_wyniki.insert(tk.END, f"{r[0]}")
 
