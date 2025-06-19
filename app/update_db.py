@@ -16,10 +16,9 @@ def update_city_measurements(
         conn: sqlite3.Connection | None = None,
         progress_cb: Callable[[int, int], None] | None = None
 ) -> int:
-    """
-    Aktualizuje dane pomiarowe z API GIOS dla wszystkich sensorów w danym mieście.
-    Zwraca liczbę **nowych** rekordów.
-    """
+
+    # Aktualizuje dane pomiarowe z API GIOS dla wszystkich sensorów w danym mieście. Zwraca liczbę **nowych** rekordów.
+
     city_name = city_name.strip().lower()
     own_conn = conn is None
     if own_conn:
@@ -81,9 +80,9 @@ def update_city_measurements(
 
 
 def _latest_times(cur: sqlite3.Cursor, station_ids: list[int]) -> dict[int, datetime | None]:
-    """
-    Zwraca mapę sensor_id → ostatnia data pomiaru (lub None).
-    """
+
+    # Zwraca mapę sensor_id → ostatnia data pomiaru (lub None).
+
     placeholders = ",".join("?" for _ in station_ids)
     cur.execute(f"""
         SELECT s.id, MAX(m.date_time)

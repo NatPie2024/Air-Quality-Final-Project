@@ -37,7 +37,7 @@ THEME = {
     "text_bg": "#ffffff",
     "text_fg": "#333333"
 }
-
+# Lista autopodpowiedzi
 class AutocompleteCombobox(ttk.Combobox):
     def set_completion_list(self, completion_list):
         self._completion_list = sorted(completion_list, key=str.lower)
@@ -50,6 +50,7 @@ class AutocompleteCombobox(ttk.Combobox):
         self["values"] = data
         self.event_generate('<Down>')
 
+#Główne okno
 class AirQualityApp:
     def __init__(self, root):
         create_tables()
@@ -64,8 +65,8 @@ class AirQualityApp:
 
         self._init_selection_tab()
         self._init_result_tab()
-        self._init_map_tab()
 
+    #styl aplikacji
     def _setup_style(self):
         s = ttk.Style()
         s.theme_use("clam")
@@ -76,27 +77,18 @@ class AirQualityApp:
         s.configure("TLabelframe", background=THEME["bg_color"], font=THEME["title_font"])
         s.configure("TLabelframe.Label", background=THEME["bg_color"], font=THEME["title_font"])
 
+    # Zakładka wyboru miasta
     def _init_selection_tab(self):
         self.selection_frame = ttk.Frame(self.notebook)
         self.notebook.add(self.selection_frame, text="Wybierz miasto, stację i parametr")
         self._build_selection_tab(self.selection_frame)
 
+    # Zakładka wykresu i analiz
     def _init_result_tab(self):
         self.result_frame = ttk.Frame(self.notebook)
         self.notebook.add(self.result_frame, text='Wykres i analiza danych')
         self._build_result_tab()
 
-    def _init_map_tab(self):
-        self.map_frame = ttk.Frame(self.notebook)
-        self.notebook.add(self.map_frame, text='Mapa stacji')
-
-        ttk.Label(
-            self.map_frame,
-            text="Kliknij przycisk, aby zobaczyć mapę stacji w wybranym mieście.",
-            font=THEME["font"]
-        ).pack(pady=10)
-
-        self._add_button(self.map_frame, "Pokaż mapę", self.show_station_map)
 
     def _build_selection_tab(self, frame):
         main = ttk.Frame(frame)
@@ -106,7 +98,7 @@ class AirQualityApp:
         right = ttk.Frame(main)
         right.pack(side="right", fill="both", expand=False, padx=(5,0))
 
-        # — LEWA KOLUMNA —
+        # LEWA KOLUMNA
         # Miasto
         city_frame = ttk.LabelFrame(left, text="Wybór miasta")
         city_frame.pack(pady=10, padx=10, fill="x")
@@ -127,7 +119,7 @@ class AirQualityApp:
         )
         fetch_station_btn.grid(row=1, column=0, columnspan=2, pady=5)
 
-        # --- Stacja i sensor ---
+        # Stacja i sensor
         station_frame = ttk.LabelFrame(left, text="Wybór stacji i sensora")
         station_frame.pack(pady=10, padx=10, fill="x")
         station_frame.columnconfigure(0, weight=1)
@@ -152,7 +144,7 @@ class AirQualityApp:
         )
         update_btn.grid(row=3, column=0, columnspan=2, pady=5)
 
-        # --- Zakres i przyciski ---
+        # Zakres i przyciski
         range_frame = ttk.LabelFrame(left, text="Zakres danych i analiza")
         range_frame.pack(pady=10, padx=10, fill="x")
         range_frame.columnconfigure(1, weight=1)
@@ -180,7 +172,8 @@ class AirQualityApp:
         )
         map_btn.grid(row=1, column=1, columnspan=1, pady=10, padx=5, sticky="ew")
 
-        # — PRAWA KOLUMNA —
+        # PRAWA KOLUMNA
+        # Stacja w promieniu
         radius_frame = ttk.LabelFrame(right, text="Stacje w promieniu od lokalizacji")
         radius_frame.pack(fill="both", pady=5, expand=True)
         ttk.Label(radius_frame, text="Lokalizacja:", font=THEME["font"]).pack(anchor="w", padx=5, pady=5)
@@ -214,6 +207,8 @@ class AirQualityApp:
             return self.listbox_wyniki.insert(tk.END, "Błędna nazwa lub brak stacji w promieniu")
         for r in results:
             self.listbox_wyniki.insert(tk.END, f"{r[0]}")
+            return None
+        return None
 
     def _on_station_selected_from_radius(self, event):
         sel = self.listbox_wyniki.curselection()
@@ -335,7 +330,7 @@ class AirQualityApp:
         self.station_list["values"] = values
         logger.info(f"Znaleziono {len(values)} stacji w mieście: {city}")
 
-        # AUTOMATYCZNE ustawienie pierwszej stacji
+        # Automatyczneustawienie pierwszej stacji
         if values:
             self.station_list.current(0)
             self.selected_station_id = self.stations_map[values[0]]
