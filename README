@@ -1,6 +1,10 @@
-JAKOŚĆ POWIETRZA W MIASTACH:
+JAKOŚĆ POWIETRZA W MIASTACH
 
 Aplikacja desktopowa z graficznym interfejsem użytkownika (GUI) oparta na Tkinterze, umożliwiająca monitorowanie jakości powietrza w polskich miastach na podstawie danych z GIOŚ.
+Aplikacja powatała jako praca zaliczeniowa na studiach podyplomowych "Akademia Programowania w Pythonie" na Collegium Da VINCI w Poznaniu
+
+AUTOR:
+Natalia Piechota
 
 FUNKCJE:
 - Przegląd jakości powietrza w miastach i na stacjach GIOŚ
