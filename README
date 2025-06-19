@@ -48,7 +48,7 @@ JAK URUCHOMIĆ:
 # Z poziomu PyCharm (tryb deweloperski)
 
 1. Otwórz projekt w PyCharmie.
-2. Kliknij prawym przyciskiem myszy na `main.py` i wybierz **Run 'main'**.
+2. Run `main.py`
 3. Aplikacja uruchomi się z graficznym interfejsem.
 
 
