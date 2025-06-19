@@ -74,10 +74,13 @@ class AirQualityApp:
 
     def _setup_style(self):
         style = ttk.Style()
+        style.theme_use("clam")
         style.configure("TFrame", background=THEME["bg_color"])
         style.configure("TLabel", background=THEME["bg_color"], font=THEME["font"])
         style.configure("TButton", font=THEME["font"], padding=10)
         style.configure("TCombobox", font=THEME["font"])
+        style.configure("TLabelframe", background=THEME["bg_color"], font=THEME["title_font"])
+        style.configure("TLabelframe.Label", background=THEME["bg_color"], font=THEME["title_font"])
 
     def _init_selection_tab(self):
         self.selection_frame = ttk.Frame(self.notebook)
@@ -105,28 +108,67 @@ class AirQualityApp:
     def _build_selection_tab(self):
         frame = self.selection_frame
 
-        tk.Label(frame, text="Podaj miasto:", font=THEME["font"], bg=THEME["bg_color"]).pack(pady=10)
-        self.city_entry = AutocompleteCombobox(frame, font=THEME["font"])
-        self.city_entry.pack()
+        city_frame = ttk.LabelFrame(frame, text="Wybór miasta")
+        city_frame.pack(pady=10, padx=10, fill="x")
+
+        tk.Label(city_frame, text="Miasto:", font=THEME["font"], bg=THEME["bg_color"]).grid(row=0, column=0, padx=5,
+                                                                                            pady=5, sticky="w")
+        self.city_entry = AutocompleteCombobox(city_frame, font=THEME["font"])
+        self.city_entry.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
+        city_frame.columnconfigure(1, weight=1)
+
+        # Ustawienie listy miast z constants.py
         self.city_entry.set_completion_list(CITY_NAMES)
 
-        self._add_button(frame, "Pobierz stację", self.fetch_stations)
-        self.station_list = ttk.Combobox(frame, state="readonly")
-        self.station_list.pack(pady=10)
+        fetch_station_btn = tk.Button(
+            city_frame, text="Pobierz stację", command=self.fetch_stations,
+            bg=THEME["btn_bg"], fg=THEME["btn_fg"], activebackground=THEME["btn_active"],
+            font=THEME["font"], relief="flat", bd=0
+        )
+        fetch_station_btn.grid(row=1, column=0, columnspan=2, pady=5)
 
-        self._add_button(frame, "Pobierz parametr", self.fetch_sensors)
-        self.sensor_list = ttk.Combobox(frame, state="readonly")
-        self.sensor_list.pack(pady=10)
+        station_frame = ttk.LabelFrame(frame, text="Wybór stacji i sensora")
+        station_frame.pack(pady=10, padx=10, fill="x")
 
-        self._add_button(frame, "Pobierz aktualne dane sensorów", self.update_database)
+        self.station_list = ttk.Combobox(station_frame, state="readonly")
+        self.station_list.grid(row=0, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
 
-        tk.Label(frame, text="Wybierz zakres danych:", font=THEME["font"], bg=THEME["bg_color"]).pack(pady=10)
-        self.range_choice = ttk.Combobox(frame, state="readonly")
+        fetch_sensor_btn = tk.Button(
+            station_frame, text="Pobierz parametr", command=self.fetch_sensors,
+            bg=THEME["btn_bg"], fg=THEME["btn_fg"], activebackground=THEME["btn_active"],
+            font=THEME["font"], relief="flat", bd=0
+        )
+        fetch_sensor_btn.grid(row=1, column=0, columnspan=2, pady=5)
+
+        self.sensor_list = ttk.Combobox(station_frame, state="readonly")
+        self.sensor_list.grid(row=2, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
+
+        update_btn = tk.Button(
+            station_frame, text="Pobierz aktualne dane sensorów", command=self.update_database,
+            bg=THEME["btn_bg"], fg=THEME["btn_fg"], activebackground=THEME["btn_active"],
+            font=THEME["font"], relief="flat", bd=0
+        )
+        update_btn.grid(row=3, column=0, columnspan=2, pady=5)
+
+        station_frame.columnconfigure(0, weight=1)
+
+        range_frame = ttk.LabelFrame(frame, text="Zakres danych i analiza")
+        range_frame.pack(pady=10, padx=10, fill="x")
+
+        tk.Label(range_frame, text="Zakres:", font=THEME["font"], bg=THEME["bg_color"]).grid(row=0, column=0, padx=5,
+                                                                                             pady=5, sticky="w")
+        self.range_choice = ttk.Combobox(range_frame, state="readonly")
         self.range_choice["values"] = ["Ostatnie 3 dni", "Ostatnie 10 dni", "Ostatnie 30 dni"]
         self.range_choice.current(1)
-        self.range_choice.pack()
+        self.range_choice.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
+        range_frame.columnconfigure(1, weight=1)
 
-        self._add_button(frame, "Pobierz dane, rysuj wykres i analizuj", self.get_data_and_plot, pady=10)
+        analyze_btn = tk.Button(
+            range_frame, text="Pobierz dane, rysuj wykres i analizuj", command=self.get_data_and_plot,
+            bg=THEME["btn_bg"], fg=THEME["btn_fg"], activebackground=THEME["btn_active"],
+            font=THEME["font"], relief="flat", bd=0
+        )
+        analyze_btn.grid(row=1, column=0, columnspan=2, pady=10)
 
     def update_database(self):
         city = self.city_entry.get()
@@ -135,13 +177,51 @@ class AirQualityApp:
             messagebox.showwarning("Uwaga", "Wpisz nazwę miasta przed aktualizacją.")
             return
 
+        # Okno ładowania
+        loading_window = tk.Toplevel(self.root)
+        loading_window.title("Ładowanie")
+        loading_window.geometry("300x100")
+        loading_window.configure(bg=THEME["bg_color"])
+        loading_window.resizable(False, False)
+        loading_window.grab_set()  # blokuje interakcje z innymi oknami
+
+        label = tk.Label(loading_window, text="Trwa pobieranie danych...", font=THEME["font"], bg=THEME["bg_color"])
+        label.pack(pady=10)
+
+        progress = ttk.Progressbar(loading_window, mode='indeterminate')
+        progress.pack(fill='x', padx=20, pady=10)
+        progress.start()
+
+        # Wyśrodkowanie względem głównego okna
+        self.root.update_idletasks()
+        root_x = self.root.winfo_x()
+        root_y = self.root.winfo_y()
+        root_w = self.root.winfo_width()
+        root_h = self.root.winfo_height()
+        win_w, win_h = 300, 100
+        pos_x = root_x + (root_w - win_w) // 2
+        pos_y = root_y + (root_h - win_h) // 2
+        loading_window.geometry(f"{win_w}x{win_h}+{pos_x}+{pos_y}")
+        self.root.update()
+
         try:
             update_city_measurements(city)
-            messagebox.showinfo("Sukces", f"Dane dla miasta '{city}' zostały zaktualizowane.")
+            progress.stop()
+            loading_window.grab_release()
+            loading_window.destroy()
+
+            # messagebox pojawia się tuż po zamknięciu loading_window (zachowuje pozycję)
+            self.root.after(100,
+                            lambda: messagebox.showinfo("Sukces", f"Dane dla miasta '{city}' zostały zaktualizowane."))
             logger.info(f"Pomyślnie zaktualizowano dane dla miasta: {city}")
+
         except Exception as e:
+            progress.stop()
+            loading_window.grab_release()
+            loading_window.destroy()
+
+            self.root.after(100, lambda: messagebox.showerror("Błąd", f"Nie udało się zaktualizować danych:\n{e}"))
             logger.exception("Błąd podczas aktualizacji danych")
-            messagebox.showerror("Błąd", f"Nie udało się zaktualizować danych:\n{e}")
 
     def _add_button(self, parent, text, command, pady=10):
         tk.Button(
