@@ -1,31 +1,13 @@
-import logging
+from typing import Callable
 import sqlite3
+import logging
 from datetime import datetime
-from typing import Iterable, Dict, Sequence, Callable
-
 from dateutil.parser import isoparse
-from app.database import connect, insert_measurement
+
 from app import api_GIOS
+from app.database import insert_measurement, connect
 
 log = logging.getLogger(__name__)
-
-def _latest_times(cur: sqlite3.Cursor, station_ids: Sequence[int]) -> Dict[int, datetime | None]:
-    if not station_ids:
-        return {}
-
-    placeholders = ",".join("?" for _ in station_ids)
-    cur.execute(f"""
-        SELECT s.id, MAX(m.date_time)
-        FROM sensors s
-        LEFT JOIN measurements m ON m.sensor_id = s.id
-        WHERE s.station_id IN ({placeholders})
-        GROUP BY s.id
-    """, station_ids)
-
-    return {
-        row[0]: (isoparse(row[1]).replace(tzinfo=None) if row[1] else None)
-        for row in cur.fetchall()
-    }
 
 
 def update_city_measurements(
@@ -34,6 +16,11 @@ def update_city_measurements(
         conn: sqlite3.Connection | None = None,
         progress_cb: Callable[[int, int], None] | None = None
 ) -> int:
+    """
+    Aktualizuje dane pomiarowe z API GIOS dla wszystkich sensorów w danym mieście.
+    Zwraca liczbę **nowych** rekordów.
+    """
+    city_name = city_name.strip().lower()
     own_conn = conn is None
     if own_conn:
         conn = connect()
@@ -42,7 +29,7 @@ def update_city_measurements(
         with conn:
             cur = conn.cursor()
 
-            cur.execute("SELECT id FROM stations WHERE LOWER(city)=LOWER(?)", (city_name,))
+            cur.execute("SELECT id FROM stations WHERE LOWER(city)=?", (city_name,))
             station_ids = [row[0] for row in cur.fetchall()]
             if not station_ids:
                 log.warning("Brak stacji w mieście '%s'", city_name)
@@ -53,15 +40,15 @@ def update_city_measurements(
                 SELECT id, param_name
                 FROM sensors
                 WHERE station_id IN ({placeholders})
-            """, station_ids)
+            """, tuple(station_ids))
             sensors = cur.fetchall()
-            latest_map = _latest_times(cur, station_ids)
 
+            latest_map = _latest_times(cur, station_ids)
             total_inserted = 0
             total_sensors = len(sensors)
 
             for i, (sensor_id, param_name) in enumerate(sensors, 1):
-                log.info("(%d/%d) Sensor: %s (ID %d)", i, total_sensors, param_name, sensor_id)
+                log.info("(%d/%d) Sensor: %s (ID: %d)", i, total_sensors, param_name, sensor_id)
                 newest = latest_map.get(sensor_id)
 
                 try:
@@ -70,17 +57,18 @@ def update_city_measurements(
                     log.error("Błąd pobierania danych z API dla sensora %d: %s", sensor_id, e)
                     continue
 
-                count = 0
-                for v in values:
-                    if v["value"] is None:
-                        continue
-                    ts = isoparse(v["date"]).replace(tzinfo=None)
-                    if newest is None or ts > newest:
-                        insert_measurement(sensor_id, v)
-                        count += 1
+                new_values = [
+                    v for v in values
+                    if v["value"] is not None and (
+                        newest is None or isoparse(v["date"]).replace(tzinfo=None) > newest
+                    )
+                ]
 
-                total_inserted += count
-                log.debug("  ↪ zapisano %d nowych pomiarów", count)
+                for v in new_values:
+                    insert_measurement(cur, sensor_id, v)
+
+                log.debug("  ↪ zapisano %d nowych pomiarów", len(new_values))
+                total_inserted += len(new_values)
 
                 if progress_cb:
                     progress_cb(i, total_sensors)
@@ -90,3 +78,28 @@ def update_city_measurements(
     finally:
         if own_conn:
             conn.close()
+
+
+def _latest_times(cur: sqlite3.Cursor, station_ids: list[int]) -> dict[int, datetime | None]:
+    """
+    Zwraca mapę sensor_id → ostatnia data pomiaru (lub None).
+    """
+    placeholders = ",".join("?" for _ in station_ids)
+    cur.execute(f"""
+        SELECT s.id, MAX(m.date_time)
+        FROM sensors s
+        LEFT JOIN measurements m ON m.sensor_id = s.id
+        WHERE s.station_id IN ({placeholders})
+        GROUP BY s.id
+    """, tuple(station_ids))
+    return {
+        sensor_id: (datetime.fromisoformat(ts) if ts else None)
+        for sensor_id, ts in cur.fetchall()
+    }
+
+def insert_measurement(cur, sensor_id: int, v: dict):
+    cur.execute(
+        "INSERT INTO measurements (sensor_id, date_time, value) VALUES (?, ?, ?)",
+        (sensor_id, v["date"], v["value"])
+    )
+
