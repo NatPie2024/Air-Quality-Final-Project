@@ -1,14 +1,13 @@
-import pytest
-import sqlite3
-from unittest.mock import patch, MagicMock
-from datetime import datetime
-
-import sys
 import os
+import sqlite3
+import sys
+from unittest.mock import patch
+
+import pytest
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'app')))
 from app.update_db import update_city_measurements
 
-from app.database import create_tables
 
 @pytest.fixture
 def create_test_db():
@@ -36,16 +35,16 @@ def create_test_db():
     return conn
 
 # --- Test gdy brak stacji ---
-def test_update_city_no_stations():
-    conn = create_test_db()
+def test_update_city_no_stations(create_test_db):
+    conn = create_test_db
 
     result = update_city_measurements("WymyśloneMiasto", conn=conn)
     assert result == 0
 
 # --- Test gdy są stacje i sensory, ale API nic nie zwraca ---
 @patch("app.update_db.api_GIOS.get_measurements_for_sensor")
-def test_update_city_no_new_data(mock_get):
-    conn = create_test_db()
+def test_update_city_no_new_data(mock_get, create_test_db):
+    conn = create_test_db
     cur = conn.cursor()
 
     # Wstawiamy dane testowe
@@ -68,8 +67,8 @@ def test_update_city_no_new_data(mock_get):
 
 # --- Test gdy API zwraca nowe dane ---
 @patch("app.update_db.api_GIOS.get_measurements_for_sensor")
-def test_update_city_with_new_data(mock_get):
-    conn = create_test_db()
+def test_update_city_with_new_data(mock_get, create_test_db):
+    conn = create_test_db
     cur = conn.cursor()
 
     cur.execute("INSERT INTO stations (id, city) VALUES (1, 'NoweMiasto')")
