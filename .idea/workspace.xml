@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3139bdd0-ea1f-4ce3-acce-16ac8d636637" name="Changes" comment="15 - dynamiczna ścieżka do bazy">
-      <change afterPath="$PROJECT_DIR$/README" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/air_quality.db" beforeDir="false" afterPath="$PROJECT_DIR$/data/air_quality.db" afterDir="false" />
-    </list>
+    <list default="true" id="3139bdd0-ea1f-4ce3-acce-16ac8d636637" name="Changes" comment="17 - requirements" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -249,7 +244,7 @@
       <workItem from="1750004011612" duration="8000" />
       <workItem from="1750004231764" duration="11588000" />
       <workItem from="1750337732748" duration="17773000" />
-      <workItem from="1750363244758" duration="880000" />
+      <workItem from="1750363244758" duration="1044000" />
     </task>
     <task id="LOCAL-00001" summary="02">
       <option name="closed" value="true" />
@@ -443,7 +438,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750363128039</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="16 - readme">
+      <option name="closed" value="true" />
+      <created>1750364208325</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1750364208325</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -480,7 +483,9 @@
     <MESSAGE value="14 - test fixed" />
     <MESSAGE value="14 - START exe" />
     <MESSAGE value="15 - dynamiczna ścieżka do bazy" />
-    <option name="LAST_COMMIT_MESSAGE" value="15 - dynamiczna ścieżka do bazy" />
+    <MESSAGE value="16 - readme" />
+    <MESSAGE value="17 - requirements" />
+    <option name="LAST_COMMIT_MESSAGE" value="17 - requirements" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PROJEKT_ZALICZENIOWY$maps.coverage" NAME="maps Coverage Results" MODIFIED="1749923764958" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/visualizations" />
@@ -494,7 +499,7 @@
     <SUITE FILE_PATH="coverage/PROJEKT_ZALICZENIOWY$sensor_selection.coverage" NAME="sensor_selection Coverage Results" MODIFIED="1748111317401" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
     <SUITE FILE_PATH="coverage/PROJEKT_ZALICZENIOWY$visualization.coverage" NAME="visualization Coverage Results" MODIFIED="1748111614623" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
     <SUITE FILE_PATH="coverage/PROJEKT_ZALICZENIOWY$check_db.coverage" NAME="check_db Coverage Results" MODIFIED="1749922074791" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
-    <SUITE FILE_PATH="coverage/main_py$main.coverage" NAME="main Coverage Results" MODIFIED="1750363415812" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/main_py$main.coverage" NAME="main Coverage Results" MODIFIED="1750364134799" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/PROJEKT_ZALICZENIOWY$database.coverage" NAME="database Coverage Results" MODIFIED="1749925147666" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
     <SUITE FILE_PATH="coverage/PROJEKT_ZALICZENIOWY$station_selection.coverage" NAME="station_selection Coverage Results" MODIFIED="1749892247562" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
     <SUITE FILE_PATH="coverage/PROJEKT_ZALICZENIOWY$analysis.coverage" NAME="analysis Coverage Results" MODIFIED="1749970261370" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
