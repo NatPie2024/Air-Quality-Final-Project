@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3139bdd0-ea1f-4ce3-acce-16ac8d636637" name="Changes" comment="18 done" />
+    <list default="true" id="3139bdd0-ea1f-4ce3-acce-16ac8d636637" name="Changes" comment="18 done">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/sensor_selection.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/sensor_selection.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/station_selection.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/station_selection.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -62,53 +66,54 @@
     <option name="sortByType" value="true" />
     <option name="sortKey" value="BY_TYPE" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python tests.Python tests for test_app.test_update_city_api_failure_does_not_crash.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for test_app.test_update_city_calls_progress_cb.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for test_app.test_update_city_no_new_data.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for test_app.test_update_city_no_stations.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for test_app.test_update_city_with_new_data.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in test_app.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in test_db.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python.Dane GIOS.executor&quot;: &quot;Run&quot;,
-    &quot;Python.analysis.executor&quot;: &quot;Run&quot;,
-    &quot;Python.api GIOS.executor&quot;: &quot;Run&quot;,
-    &quot;Python.api_GIOS.executor&quot;: &quot;Run&quot;,
-    &quot;Python.charts.executor&quot;: &quot;Run&quot;,
-    &quot;Python.check_db.executor&quot;: &quot;Run&quot;,
-    &quot;Python.database.executor&quot;: &quot;Run&quot;,
-    &quot;Python.gui.executor&quot;: &quot;Run&quot;,
-    &quot;Python.gui2.executor&quot;: &quot;Run&quot;,
-    &quot;Python.ingest.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.maps.executor&quot;: &quot;Run&quot;,
-    &quot;Python.sensor_selection.executor&quot;: &quot;Run&quot;,
-    &quot;Python.station_selection.executor&quot;: &quot;Run&quot;,
-    &quot;Python.testy.executor&quot;: &quot;Run&quot;,
-    &quot;Python.update_db.executor&quot;: &quot;Run&quot;,
-    &quot;Python.visualization.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/pnatalia/PycharmProjects/PythonProject/data&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python tests.Python tests for test_app.test_update_city_api_failure_does_not_crash.executor": "Run",
+    "Python tests.Python tests for test_app.test_update_city_calls_progress_cb.executor": "Run",
+    "Python tests.Python tests for test_app.test_update_city_no_new_data.executor": "Run",
+    "Python tests.Python tests for test_app.test_update_city_no_stations.executor": "Run",
+    "Python tests.Python tests for test_app.test_update_city_with_new_data.executor": "Run",
+    "Python tests.Python tests in test_app.py.executor": "Run",
+    "Python tests.Python tests in test_db.py.executor": "Run",
+    "Python.Dane GIOS.executor": "Run",
+    "Python.__init__.executor": "Run",
+    "Python.analysis.executor": "Run",
+    "Python.api GIOS.executor": "Run",
+    "Python.api_GIOS.executor": "Run",
+    "Python.charts.executor": "Run",
+    "Python.check_db.executor": "Run",
+    "Python.database.executor": "Run",
+    "Python.gui.executor": "Run",
+    "Python.gui2.executor": "Run",
+    "Python.ingest.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.maps.executor": "Run",
+    "Python.sensor_selection.executor": "Run",
+    "Python.station_selection.executor": "Run",
+    "Python.testy.executor": "Run",
+    "Python.update_db.executor": "Run",
+    "Python.visualization.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "master",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "C:/Users/pnatalia/PycharmProjects/PythonProject/data",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;postgresql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\pnatalia\PycharmProjects\PythonProject\data" />
@@ -121,7 +126,7 @@
       <recent name="C:\Users\pnatalia\PycharmProjects\Air-Quality-Final-Project\app" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests for test_app.test_update_city_api_failure_does_not_crash">
+  <component name="RunManager">
     <configuration name="Python tests for test_app.test_update_city_api_failure_does_not_crash" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="PROJEKT ZALICZENIOWY" />
       <option name="ENV_FILES" value="" />
@@ -246,6 +251,7 @@
       <workItem from="1750337732748" duration="17773000" />
       <workItem from="1750363244758" duration="1236000" />
       <workItem from="1750365024019" duration="64000" />
+      <workItem from="1750365261252" duration="451000" />
     </task>
     <task id="LOCAL-00001" summary="02">
       <option name="closed" value="true" />
@@ -471,7 +477,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750365081419</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="18 done">
+      <option name="closed" value="true" />
+      <created>1750365427397</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1750365427397</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

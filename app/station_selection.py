@@ -11,9 +11,9 @@ if not logger.hasHandlers():
     logger.addHandler(handler)
 
 def select_station_from_city(city_name="Poznań"):
-    """
-    Interaktywny wybór stacji z miasta (wersja konsolowa).
-    """
+
+    # Interaktywny wybór stacji z miasta (wersja konsolowa).
+
     logger.info(f"Rozpoczynanie wyboru stacji dla miasta: {city_name}")
     stations = api_GIOS.get_all_stations()
 
@@ -50,9 +50,9 @@ def select_station_from_city(city_name="Poznań"):
     return selected_id
 
 def get_stations_in_city(city_name):
-    """
-    Zwraca listę stacji w danym mieście (do GUI).
-    """
+
+    # Zwraca listę stacji w danym mieście (do GUI).
+
     logger.info(f"Pobieranie listy stacji dla miasta: {city_name}")
     stations = api_GIOS.get_all_stations()
     city_stations = [

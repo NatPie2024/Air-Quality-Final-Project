@@ -11,9 +11,9 @@ if not logger.hasHandlers():
     logger.addHandler(handler)
 
 def select_sensor_from_station(station_id):
-    """
-    Interaktywny wybór sensora z terminala dla danej stacji.
-    """
+
+    # Interaktywny wybór sensora z terminala dla danej stacji.
+
     logger.info(f"Rozpoczynanie wyboru sensora dla stacji ID: {station_id}")
     sensors = api_GIOS.get_sensors_for_station(station_id)
 
@@ -44,8 +44,8 @@ def select_sensor_from_station(station_id):
     return selected_sensor
 
 def get_sensors_for_station(station_id):
-    """
-    Zwraca listę sensorów w danej stacji (dla GUI).
-    """
+
+    # Zwraca listę sensorów w danej stacji (dla GUI).
+
     logger.info(f"Pobieranie sensorów dla stacji ID: {station_id} (do GUI)")
     return api_GIOS.get_sensors_for_station(station_id)
